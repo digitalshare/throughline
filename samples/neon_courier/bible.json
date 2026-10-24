@@ -1,8 +1,8 @@
 {
-  "series": {"id": "neon_courier", "title": "Neon Courier", "format": "9:16 vertical, 60-90s episodes", "style": "rain-soaked cyberpunk, neon magenta and teal, anamorphic flares"},
+  "series": {"id": "neon_courier", "title": "Neon Courier", "format": "9:16 vertical, 60-90s episodes", "style": "photoreal live-action cinematography, real actors, rain-soaked cyberpunk, neon magenta and teal, anamorphic flares"},
   "characters": {
     "MIRA":  {"name": "Mira",  "canonical_look": "woman in her 20s, short black bob with a teal streak, scar through left eyebrow", "voice": "low, dry", "default_outfit": "mira_jacket"},
-    "JUNO":  {"name": "Juno",  "canonical_look": "girl of 17, long silver-dyed braids, freckles", "voice": "bright, fast", "default_outfit": "juno_hoodie"},
+    "JUNO":  {"name": "Juno",  "canonical_look": "young woman of 19, long silver-dyed braids, freckles", "voice": "bright, fast", "default_outfit": "juno_hoodie"},
     "KAI":   {"name": "Kai",   "canonical_look": "man in his 20s, shaved head, cracked AR visor over right eye", "voice": "soft, amused", "default_outfit": "kai_coat"},
     "VOSS":  {"name": "Director Voss", "canonical_look": "man in his 60s, slicked white hair, pale eyes", "voice": "calm, clipped", "default_outfit": "voss_suit"},
     "ROOK":  {"name": "Rook",  "canonical_look": "huge man, chrome prosthetic left arm, mohawk", "voice": "gravel", "default_outfit": "rook_armor"}
@@ -10,7 +10,7 @@
   "outfits": {
     "mira_jacket":       "black leather courier jacket",
     "mira_jacket_scarf": "black leather courier jacket with Juno's red scarf",
-    "juno_hoodie":       "oversized grey hoodie, silver locket",
+    "juno_hoodie":       "oversized grey hoodie over black cargo pants, silver locket",
     "kai_coat":          "long olive tech coat",
     "voss_suit":         "white three-piece suit",
     "rook_armor":        "matte black riot armor"

@@ -26,7 +26,7 @@ class ShotPrompt:
         return asdict(self)
 
 
-def _active_outfit(g: Graph, cid: str, scene_order: int) -> tuple[str, str, str, int | None]:
+def active_outfit(g: Graph, cid: str, scene_order: int) -> tuple[str, str, str, int | None]:
     """The outfit a character wears in a scene, from their WEARS timeline: (id, description, since_scene, since_line)."""
     rows = g.query(
         """MATCH (c:Character {id: $cid})-[w:WEARS]->(o:Outfit) WHERE w.from_order < $order + 100
@@ -69,7 +69,7 @@ def compile_episode(g: Graph, episode: int) -> list[ShotPrompt]:
             {"shot": shot},
         ).result_set
         for cid, name, canonical, scripted in cast:
-            outfit, outfit_desc, since, since_line = _active_outfit(g, cid, order)
+            outfit, outfit_desc, since, since_line = active_outfit(g, cid, order)
             people.append(f"{name} ({canonical}, wearing {outfit_desc})")
             sources.append(Source(f"{name}'s look: {canonical}", f"Character {cid}.canonical_look (series bible)"))
             origin = "default outfit, series bible" if since == "bible" else f"since {since} line {since_line}"

@@ -105,6 +105,20 @@ def generate_shot(shot_id: str, seconds: int = 5, provider: str = "fal") -> dict
     return video.generate_shot(connect(GRAPH), SERIES_DIR / "renders", shot_id, seconds, provider)
 
 
+@server.tool(annotations=READ)
+def estimate_render(episode: int, seconds: int = 5, provider: str = "fal") -> dict:
+    """What rendering an episode would cost: shots without clips yet, new reference images, and USD."""
+    return video.estimate_cost(connect(GRAPH), SERIES_DIR / "renders", episode, seconds, provider)
+
+
+@server.tool(annotations=SPEND)
+def render_episode(episode: int, seconds: int = 5, provider: str = "fal") -> dict:
+    """NEEDS APPROVAL, spends credits. Call estimate_render first and tell the user the price. Renders every shot of
+    the episode that has no clip yet (FLUX.2 keyframe from each character's reference in their current outfit, then
+    image-to-video), then assembles the episode video. Failed shots are listed; rerun to retry only those."""
+    return video.render_episode(connect(GRAPH), SERIES_DIR / "renders", episode, seconds, provider)
+
+
 @server.tool(annotations=WRITE)
 def sync_trends(keyword: str, limit: int = 20, max_age_hours: float = 6) -> dict:
     """Pull top TikTok posts for a niche keyword or hashtag via Bright Data into the graph. A fresh scrape takes
@@ -164,6 +178,42 @@ async def api_findings(request: Request) -> Response:
 @server.custom_route("/api/prompts/{episode:int}", methods=["GET"])
 async def api_prompts(request: Request) -> Response:
     return JSONResponse([p.to_dict() for p in compile_episode(connect(GRAPH), request.path_params["episode"])])
+
+
+@server.custom_route("/api/characters", methods=["GET"])
+async def api_characters(request: Request) -> Response:
+    rows = connect(GRAPH).query("MATCH (c:Character) RETURN c.id, c.name, c.canonical_look ORDER BY c.id").result_set
+    avatars = SERIES_DIR / "renders" / "avatars"
+    return JSONResponse([
+        {"id": cid, "name": name, "look": look,
+         "avatar": f"/media/avatars/{cid}.png" if video.avatar_path(avatars, cid).exists() else None}
+        for cid, name, look in rows
+    ])
+
+
+@server.custom_route("/api/renders/{episode:int}", methods=["GET"])
+async def api_renders(request: Request) -> Response:
+    episode = request.path_params["episode"]
+    renders = SERIES_DIR / "renders"
+    g = connect(GRAPH)
+    shots = {
+        shot: {
+            "keyframe": f"/media/keyframes/{shot}.png" if (renders / "keyframes" / f"{shot}.png").exists() else None,
+            "clip": f"/media/clips/{shot}.mp4" if (renders / "clips" / f"{shot}.mp4").exists() else None,
+        }
+        for shot, _ in video.episode_shots(g, episode)
+    }
+    full = renders / "episodes" / f"ep{episode}.mp4"
+    return JSONResponse({"episode": f"/media/episodes/ep{episode}.mp4" if full.exists() else None, "shots": shots})
+
+
+@server.custom_route("/media/{kind}/{name}", methods=["GET"])
+async def media(request: Request) -> Response:
+    kind, name = request.path_params["kind"], request.path_params["name"]
+    if kind not in ("keyframes", "clips", "episodes", "characters", "avatars") or "/" in name or name.startswith("."):
+        return JSONResponse({"error": "not found"}, status_code=404)
+    path = SERIES_DIR / "renders" / kind / name
+    return FileResponse(path) if path.is_file() else JSONResponse({"error": "not found"}, status_code=404)
 
 
 @server.custom_route("/api/audience", methods=["GET"])

@@ -1,4 +1,4 @@
-"""CLI: `python -m throughline ingest <series_dir>` and `python -m throughline check [--episode N]`."""
+"""CLI: `python -m throughline ingest <series_dir>`, `check [--episode N]`, `render --episode N` and `avatars`."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import argparse
 import json
 from pathlib import Path
 
-from . import checks
+from . import checks, video
 from .graph import connect, load_series
 
 ICONS = {"error": "✖", "warning": "!", "info": "·"}
@@ -24,7 +24,46 @@ def main() -> None:
     check.add_argument("--graph", default="neon_courier")
     check.add_argument("--episode", type=int)
     check.add_argument("--json", action="store_true")
+    render = sub.add_parser("render", help="render an episode's shots and assemble the episode video")
+    render.add_argument("--graph", default="neon_courier")
+    render.add_argument("--episode", type=int, required=True)
+    render.add_argument("--renders", type=Path, default=Path(__file__).resolve().parents[2] / "workspace" / "neon_courier" / "renders")
+    render.add_argument("--seconds", type=int, default=5)
+    render.add_argument("--provider", choices=["fal", "machgen"], default="fal")
+    render.add_argument("--force", action="store_true", help="re-render shots that already have clips")
+    render.add_argument("--yes", action="store_true", help="spend the money; without it, only print the estimate")
+    avatars = sub.add_parser("avatars", help="make a profile portrait for every character that lacks one")
+    avatars.add_argument("--graph", default="neon_courier")
+    avatars.add_argument("--renders", type=Path, default=Path(__file__).resolve().parents[2] / "workspace" / "neon_courier" / "renders")
+    avatars.add_argument("--yes", action="store_true", help="spend the money; without it, only print the estimate")
     args = parser.parse_args()
+
+    if args.cmd == "avatars":
+        g = connect(args.graph)
+        missing = [cid for (cid,) in g.query("MATCH (c:Character) RETURN c.id ORDER BY c.id").result_set
+                   if not video.avatar_path(args.renders / "avatars", cid).exists()]
+        print(f"{len(missing)} portraits to make ({', '.join(missing) or 'none'}), about ${len(missing) * video.IMAGE_COST:.2f} "
+              "plus any missing reference images")
+        if args.yes:
+            for cid in missing:
+                try:
+                    print(cid, video.character_avatar(g, cid, args.renders))
+                except video.RenderError as exc:  # e.g. a provider moderation false positive; the others still run
+                    print(cid, "FAILED:", exc)
+        elif missing:
+            print("dry run; pass --yes to generate")
+        return
+
+    if args.cmd == "render":
+        g = connect(args.graph)
+        estimate = video.estimate_cost(g, args.renders, args.episode, args.seconds, args.provider, args.force)
+        print(f"episode {args.episode}: {len(estimate['shots_to_render'])} shots, "
+              f"{estimate['new_reference_images']} new reference images, about ${estimate['usd']}")
+        if not args.yes:
+            print("dry run; pass --yes to render")
+            return
+        print(json.dumps(video.render_episode(g, args.renders, args.episode, args.seconds, args.provider, args.force), indent=2))
+        return
 
     if args.cmd == "ingest":
         g = load_series(args.series_dir, args.graph, live=args.live, wipe=args.wipe)

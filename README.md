@@ -27,7 +27,11 @@ CLI without the agent:
 ```sh
 uv run python -m throughline ingest ../samples/neon_courier
 uv run python -m throughline check --episode 4
+uv run python -m throughline render --episode 1          # prints the cost estimate only
+uv run python -m throughline render --episode 1 --yes    # renders missing shots, assembles workspace/.../episodes/ep1.mp4
 ```
+
+Renders keep characters consistent: each character gets one FLUX.2 reference image per outfit (a new outfit is drawn from their existing reference), each shot's keyframe uses the outfit the wardrobe timeline says they wear in that scene, and the keyframe is animated by Kling v3 on fal (or MachGen). Re-running a render only redoes shots without a clip.
 
 To reset the demo, delete `workspace/` and restart the MCP server.
 
