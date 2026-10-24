@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Throughline</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+<style>
+  :root {
+    --bg: #0d0f14; --panel: #151821; --panel-2: #1c2030; --line: #2a2f42;
+    --text: #e6e8ef; --muted: #8a90a6; --accent: #ff3ea5; --teal: #2ee6d6;
+    --error: #ff5470; --warning: #ffb547; --info: #7aa2ff; --hl: rgba(255, 62, 165, .16);
+    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.45 system-ui, -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  header h1 { font-size: 16px; margin: 0; letter-spacing: .02em; }
+  header h1 span { color: var(--accent); }
+  .tabs { display: flex; gap: 4px; }
+  .tab { background: none; border: 1px solid var(--line); color: var(--muted); padding: 4px 10px; border-radius: 6px; cursor: pointer; font: inherit; }
+  .tab.on { color: var(--text); border-color: var(--accent); background: var(--hl); }
+  .spacer { flex: 1; }
+  .counts { color: var(--muted); font-size: 13px; }
+  .counts b.e { color: var(--error); } .counts b.w { color: var(--warning); }
+  main { flex: 1; display: grid; grid-template-columns: 340px minmax(0, 1fr) minmax(0, 1.1fr); min-height: 0; }
+  section { border-right: 1px solid var(--line); overflow: auto; min-height: 0; }
+  section:last-child { border-right: 0; display: flex; flex-direction: column; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; padding: 12px 16px 8px; position: sticky; top: 0; background: var(--bg); z-index: 1; }
+  .finding { margin: 0 12px 8px; padding: 10px 12px; background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--info); border-radius: 8px; cursor: pointer; }
+  .finding.error { border-left-color: var(--error); } .finding.warning { border-left-color: var(--warning); }
+  .finding.on { border-color: var(--accent); background: var(--panel-2); }
+  .finding .where { font: 12px var(--mono); color: var(--muted); }
+  .finding .title { font-weight: 600; margin: 2px 0; }
+  .finding .detail { color: var(--muted); font-size: 13px; }
+  .script { font: 13px/1.6 var(--mono); padding-bottom: 40vh; }
+  .ln { display: flex; padding: 0 16px 0 0; white-space: pre-wrap; }
+  .ln .n { width: 44px; flex: none; text-align: right; padding-right: 12px; color: #4b5168; user-select: none; }
+  .ln.heading { color: var(--teal); font-weight: 600; margin-top: 8px; }
+  .ln.hl { background: var(--hl); box-shadow: inset 3px 0 var(--accent); }
+  .rtabs { display: flex; gap: 4px; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+  .pane { flex: 1; overflow: auto; min-height: 0; display: none; }
+  .pane.on { display: block; }
+  #cy { height: 58%; min-height: 280px; border-bottom: 1px solid var(--line); }
+  .explain { padding: 12px 16px; }
+  .explain .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { font: 12px var(--mono); padding: 2px 8px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); cursor: pointer; background: none; }
+  .chip:hover { color: var(--text); border-color: var(--accent); }
+  .empty { color: var(--muted); padding: 16px; }
+  .prompt { margin: 12px 16px; padding: 12px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+  .prompt .id { font: 12px var(--mono); color: var(--teal); }
+  .prompt p { margin: 6px 0; }
+  .prompt ul { margin: 6px 0 0; padding-left: 18px; color: var(--muted); font-size: 12.5px; }
+  .prompt li code { color: var(--text); }
+  .fix { color: var(--warning); font-size: 12.5px; margin-top: 6px; }
+  table { width: calc(100% - 32px); margin: 0 16px 16px; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; }
+  td.num { font-variant-numeric: tabular-nums; text-align: right; }
+  a { color: var(--teal); }
+  @media (max-width: 1100px) { main { grid-template-columns: 1fr; } section { border-right: 0; border-bottom: 1px solid var(--line); max-height: 70vh; } }
+</style>
+</head>
+<body>
+<header>
+  <h1><span>●</span> Throughline <span id="series" style="color:var(--muted);font-weight:400"></span></h1>
+  <div class="tabs" id="eps"></div>
+  <div class="spacer"></div>
+  <div class="counts" id="counts"></div>
+  <button class="tab" id="refresh" title="Re-run the checks">Refresh</button>
+</header>
+<main>
+  <section><h2>Findings</h2><div id="findings"></div></section>
+  <section><h2 id="script-title">Script</h2><div class="script" id="script"></div></section>
+  <section>
+    <div class="rtabs">
+      <button class="tab on" data-pane="path">Proof path</button>
+      <button class="tab" data-pane="prompts">Shot prompts</button>
+      <button class="tab" data-pane="audience">Audience</button>
+    </div>
+    <div class="pane on" id="pane-path"><div id="cy"></div><div class="explain" id="explain"><div class="empty">Pick a finding to see the graph path that proves it.</div></div></div>
+    <div class="pane" id="pane-prompts"></div>
+    <div class="pane" id="pane-audience"></div>
+  </section>
+</main>
+<script>
+const COLORS = { Character: "#ff3ea5", Fact: "#ffb547", Scene: "#2ee6d6", Shot: "#7aa2ff", Outfit: "#b78bff", Prop: "#ff8a3d" };
+const state = { episodes: [], episode: null, findings: [], selected: null, cy: null };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const epOf = (scene) => Number(String(scene).match(/^E(\d+)S/)?.[1]);
+
+async function getJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(`${url}: ${r.status}`);
+  return r.json();
+}
+
+async function boot() {
+  const data = await getJSON("/api/episodes");
+  state.episodes = data.episodes;
+  $("series").textContent = "· " + data.title;
+  $("eps").innerHTML = state.episodes.map((e) => `<button class="tab" data-ep="${e.num}">Ep ${e.num}</button>`).join("");
+  $("eps").onclick = (ev) => ev.target.dataset.ep && showEpisode(Number(ev.target.dataset.ep));
+  document.querySelector(".rtabs").onclick = (ev) => ev.target.dataset.pane && showPane(ev.target.dataset.pane);
+  $("refresh").onclick = loadFindings;
+  await loadFindings();
+  await showEpisode(state.episodes.at(-1).num);
+  loadAudience();
+}
+
+async function loadFindings() {
+  state.findings = await getJSON("/api/findings");
+  const n = (sev) => state.findings.filter((f) => f.severity === sev).length;
+  $("counts").innerHTML = `<b class="e">${n("error")}</b> errors · <b class="w">${n("warning")}</b> warnings · ${n("info")} notes`;
+  $("findings").innerHTML = state.findings.length ? state.findings.map((f, i) => `
+    <div class="finding ${f.severity}" data-i="${i}">
+      <div class="where">${f.scene} · line ${f.line ?? "?"} · ${f.type.replace(/_/g, " ")}</div>
+      <div class="title">${esc(f.title)}</div>
+      <div class="detail">${esc(f.detail)}</div>
+    </div>`).join("") : `<div class="empty">No open findings. Ready to render.</div>`;
+  $("findings").onclick = (ev) => { const el = ev.target.closest(".finding"); el && selectFinding(Number(el.dataset.i)); };
+}
+
+async function showEpisode(num, highlight = []) {
+  state.episode = num;
+  document.querySelectorAll("#eps .tab").forEach((b) => b.classList.toggle("on", Number(b.dataset.ep) === num));
+  const ep = state.episodes.find((e) => e.num === num);
+  $("script-title").textContent = `Episode ${num} · ${ep.title}`;
+  const { lines } = await getJSON(`/api/script/${num}`);
+  const headings = new Set(ep.scenes.map((s) => s.line_start));
+  $("script").innerHTML = lines.map((t, i) => `<div class="ln${headings.has(i + 1) ? " heading" : ""}${highlight.includes(i + 1) ? " hl" : ""}" id="L${i + 1}"><span class="n">${i + 1}</span><span>${esc(t) || " "}</span></div>`).join("");
+  if (highlight.length) $(`L${highlight[0]}`)?.scrollIntoView({ block: "center", behavior: "smooth" });
+  loadPrompts(num);
+}
+
+function selectFinding(i) {
+  const f = state.findings[i];
+  state.selected = f;
+  document.querySelectorAll(".finding").forEach((el) => el.classList.toggle("on", Number(el.dataset.i) === i));
+  const ep = epOf(f.scene);
+  const lines = [f.line, ...f.edges.filter((e) => epOf(e.scene) === ep).map((e) => e.line)].filter(Boolean);
+  showEpisode(ep, lines);
+  showPane("path");
+  drawPath(f);
+  const refs = f.edges.filter((e) => e.scene && e.scene !== "bible" && e.line);
+  $("explain").innerHTML = `
+    <div class="where" style="font:12px var(--mono);color:var(--muted)">${f.id}</div>
+    <div style="font-weight:600;margin:4px 0">${esc(f.title)}</div>
+    <div style="color:var(--muted)">${esc(f.detail)}</div>
+    <div class="chips">${refs.map((e) => `<button class="chip" data-ep="${epOf(e.scene)}" data-line="${e.line}">${e.type} · ${e.scene} L${e.line}</button>`).join("")}</div>`;
+  $("explain").querySelector(".chips").onclick = (ev) => {
+    const b = ev.target.closest(".chip");
+    b && showEpisode(Number(b.dataset.ep), [Number(b.dataset.line)]);
+  };
+}
+
+function drawPath(f) {
+  const nodes = new Map(f.nodes.map((n) => [n.id, n]));
+  f.edges.forEach((e) => [e.source, e.target].forEach((id) => nodes.has(id) || nodes.set(id, { id, label: "Scene", name: id })));
+  const elements = [
+    ...[...nodes.values()].map((n) => ({ data: { id: n.id, label: n.label === "Fact" || n.label === "Outfit" || n.label === "Prop" ? wrap(n.name) : n.name, kind: n.label } })),
+    ...f.edges.map((e, i) => ({ data: { id: `e${i}`, source: e.source, target: e.target, label: `${e.type}${e.scene ? " · " + e.scene : ""}${e.line ? " L" + e.line : ""}` } })),
+  ];
+  state.cy?.destroy();
+  state.cy = cytoscape({
+    container: $("cy"), elements, wheelSensitivity: 0.3, maxZoom: 1.1, minZoom: 0.3,
+    layout: { name: "cose", animate: false, padding: 40, nodeDimensionsIncludeLabels: true, nodeRepulsion: 600000, idealEdgeLength: 170, randomize: false },
+    style: [
+      { selector: "node", style: { "background-color": (n) => COLORS[n.data("kind")] || "#888", label: "data(label)", color: "#e6e8ef", "font-size": 11, "text-wrap": "wrap", "text-max-width": 140, "text-valign": "bottom", "text-margin-y": 6, width: 22, height: 22 } },
+      { selector: "edge", style: { width: 1.6, "line-color": "#4b5168", "target-arrow-color": "#4b5168", "target-arrow-shape": "triangle", "curve-style": "bezier", label: "data(label)", "font-size": 9.5, color: "#8a90a6", "text-rotation": "autorotate", "text-background-color": "#0d0f14", "text-background-opacity": 1, "text-background-padding": 2 } },
+    ],
+  });
+  // the pane may have just become visible; lay out again once it has its real size
+  requestAnimationFrame(() => { state.cy.resize(); state.cy.layout({ name: "cose", animate: false, padding: 40, nodeDimensionsIncludeLabels: true, nodeRepulsion: 600000, idealEdgeLength: 170 }).run(); });
+}
+
+const wrap = (s) => String(s).length > 46 ? String(s).slice(0, 44) + "…" : s;
+
+function showPane(name) {
+  document.querySelectorAll(".rtabs .tab").forEach((b) => b.classList.toggle("on", b.dataset.pane === name));
+  document.querySelectorAll(".pane").forEach((p) => p.classList.toggle("on", p.id === `pane-${name}`));
+  if (name === "path") state.cy?.resize();
+}
+
+async function loadPrompts(num) {
+  const prompts = await getJSON(`/api/prompts/${num}`);
+  $("pane-prompts").innerHTML = prompts.map((p) => `
+    <div class="prompt">
+      <div class="id">${p.shot} · line ${p.line ?? "?"}</div>
+      <p>${esc(p.prompt)}</p>
+      ${p.corrections.map((c) => `<div class="fix">⚑ ${esc(c)}</div>`).join("")}
+      <ul>${p.sources.map((s) => `<li><code>${esc(s.detail)}</code> ← ${esc(s.path)}</li>`).join("")}</ul>
+    </div>`).join("") || `<div class="empty">No shots.</div>`;
+}
+
+async function loadAudience() {
+  const a = await getJSON("/api/audience");
+  const rows = (items, cols) => items.map((r) => `<tr>${cols.map(([k, cls]) => `<td class="${cls || ""}">${k(r)}</td>`).join("")}</tr>`).join("");
+  $("pane-audience").innerHTML = `
+    <h2>Viewers flagging problems</h2>
+    ${a.viewer_flags.length ? `<table><tr><th>Ep</th><th>Comment</th><th>Likes</th><th>Matches finding</th></tr>${rows(a.viewer_flags, [[(r) => r.episode], [(r) => esc(r.comment)], [(r) => r.likes, "num"], [(r) => r.matching_findings.join(", ") || "—"]])}</table>` : `<div class="empty">No episode comments synced yet. Publish an episode, then run <code>sync_episode_audience</code>.</div>`}
+    <h2>Characters in comments</h2>
+    ${a.characters.length ? `<table><tr><th>Character</th><th>Mentions</th><th>Likes</th><th>+ / −</th></tr>${rows(a.characters, [[(r) => esc(r.name)], [(r) => r.mentions, "num"], [(r) => r.likes, "num"], [(r) => `${r.positive} / ${r.negative}`, "num"]])}</table>` : `<div class="empty">No comments linked yet.</div>`}
+    <h2>Niche hashtags (TikTok, via Bright Data)</h2>
+    ${a.niche_hashtags.length ? `<table><tr><th>Hashtag</th><th>Posts</th><th>Views</th></tr>${rows(a.niche_hashtags, [[(r) => "#" + esc(r.tag)], [(r) => r.posts, "num"], [(r) => Number(r.views).toLocaleString(), "num"]])}</table>` : `<div class="empty">Run <code>sync_trends</code> to pull the niche.</div>`}
+    <h2>Top posts in the niche</h2>
+    ${a.niche_top_posts.length ? `<table><tr><th>Post</th><th>Views</th><th>Likes</th></tr>${rows(a.niche_top_posts, [[(r) => `<a href="${esc(r.url)}" target="_blank" rel="noopener">@${esc(r.author)}</a> ${esc(String(r.caption).slice(0, 80))}`], [(r) => Number(r.views).toLocaleString(), "num"], [(r) => r.likes, "num"]])}</table>` : ""}`;
+}
+
+boot().catch((err) => { document.body.insertAdjacentHTML("beforeend", `<div class="empty">Viewer failed to load: ${esc(err.message)}</div>`); });
+</script>
+</body>
+</html>

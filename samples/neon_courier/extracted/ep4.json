@@ -1,0 +1,117 @@
+{
+  "episode": 4,
+  "title": "Fallout",
+  "scenes": [
+    {
+      "num": 1,
+      "heading": "EXT. CITY STREETS - NIGHT",
+      "location": "city_streets",
+      "characters": [
+        "MIRA",
+        "JUNO"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira in her black leather courier jacket walks the streets with Juno",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": "mira_jacket"
+            },
+            {
+              "character": "JUNO",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "in her black leather courier jacket"
+        }
+      ],
+      "events": [
+        {
+          "type": "references",
+          "character": "JUNO",
+          "fact": "voss_has_daughter",
+          "quote": "Voss has a daughter."
+        },
+        {
+          "type": "references",
+          "character": "JUNO",
+          "fact": "daughter_name",
+          "quote": "Elena. She's his weak spot."
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 2,
+      "heading": "EXT. HIGHWAY - NIGHT",
+      "location": "highway",
+      "characters": [
+        "MIRA",
+        "KAI"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira guns her motorbike down the highway, Kai behind her",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "motorbike"
+          ],
+          "quote": "guns her motorbike down the highway"
+        }
+      ],
+      "events": [
+        {
+          "type": "prop_state",
+          "prop": "motorbike",
+          "state": "present",
+          "holder": "MIRA",
+          "quote": "guns her motorbike down the highway"
+        },
+        {
+          "type": "references",
+          "character": "KAI",
+          "fact": "locket_key",
+          "quote": "So the locket opens the vault, right?"
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 3,
+      "heading": "INT. UNDERGROUND GARAGE - LATER",
+      "location": "garage",
+      "characters": [
+        "ROOK"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Rook steps out of the darkness, chrome arm gleaming",
+          "characters": [
+            {
+              "character": "ROOK",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "Rook steps out of the darkness"
+        }
+      ],
+      "events": [],
+      "flashback": false
+    }
+  ]
+}

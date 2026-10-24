@@ -1,0 +1,218 @@
+{
+  "episode": 1,
+  "title": "The Drop",
+  "scenes": [
+    {
+      "num": 1,
+      "heading": "EXT. ROOFTOP GARDEN - NIGHT",
+      "location": "rooftop_garden",
+      "characters": [
+        "MIRA",
+        "JUNO"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Rain over the neon skyline; Mira waits by her motorbike",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": "mira_jacket"
+            }
+          ],
+          "props": [
+            "motorbike"
+          ],
+          "quote": "waits by her motorbike"
+        },
+        {
+          "num": 2,
+          "description": "Juno steps out and presses the datachip into Mira's palm",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "JUNO",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "datachip",
+            "locket"
+          ],
+          "quote": "presses a datachip into Mira's palm"
+        },
+        {
+          "num": 3,
+          "description": "Juno taps her locket",
+          "characters": [
+            {
+              "character": "JUNO",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "locket"
+          ],
+          "quote": "Juno taps her locket."
+        }
+      ],
+      "events": [
+        {
+          "type": "prop_state",
+          "prop": "motorbike",
+          "state": "present",
+          "holder": "MIRA",
+          "quote": "waits by her motorbike"
+        },
+        {
+          "type": "prop_state",
+          "prop": "datachip",
+          "state": "held",
+          "holder": "MIRA",
+          "quote": "presses a datachip into Mira's palm"
+        },
+        {
+          "type": "establishes",
+          "fact": "ledger",
+          "kind": "secret",
+          "text": "The datachip holds Voss's ledger of every bribe",
+          "known_by": [
+            "MIRA",
+            "JUNO"
+          ],
+          "quote": "It's the Voss ledger."
+        },
+        {
+          "type": "establishes",
+          "fact": "locket_key",
+          "kind": "setup",
+          "text": "Juno's locket opens the vault",
+          "known_by": [
+            "MIRA",
+            "JUNO"
+          ],
+          "quote": "the locket opens the vault"
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 2,
+      "heading": "INT. NIGHT MARKET - CONTINUOUS",
+      "location": "night_market",
+      "characters": [
+        "MIRA",
+        "KAI"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira weaves through noodle stalls; Kai falls into step",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "falls into step beside her"
+        }
+      ],
+      "events": [],
+      "flashback": false
+    },
+    {
+      "num": 3,
+      "heading": "INT. VOSS TOWER - PENTHOUSE - LATER",
+      "location": "voss_penthouse",
+      "characters": [
+        "VOSS",
+        "KAI"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Voss watches the market on a wall of screens; Kai on a call",
+          "characters": [
+            {
+              "character": "VOSS",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "Kai's face appears on a call."
+        }
+      ],
+      "events": [
+        {
+          "type": "establishes",
+          "fact": "kai_informant",
+          "kind": "secret",
+          "text": "Kai secretly works for Voss",
+          "known_by": [
+            "VOSS",
+            "KAI"
+          ],
+          "quote": "Nobody knows you're mine, Kai."
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 4,
+      "heading": "EXT. ROOFTOP GARDEN - LATER",
+      "location": "rooftop_garden",
+      "characters": [
+        "MIRA"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Juno's locket in a puddle; Mira's headlight sweeps the empty roof",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "locket",
+            "motorbike"
+          ],
+          "quote": "Juno's locket lies in a puddle."
+        }
+      ],
+      "events": [
+        {
+          "type": "prop_state",
+          "prop": "locket",
+          "state": "held",
+          "holder": "MIRA",
+          "quote": "Juno's locket lies in a puddle."
+        },
+        {
+          "type": "establishes",
+          "fact": "juno_taken",
+          "kind": "cliffhanger",
+          "text": "Juno has been abducted",
+          "known_by": [
+            "MIRA"
+          ],
+          "quote": "Juno is gone."
+        }
+      ],
+      "flashback": false
+    }
+  ]
+}

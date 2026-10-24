@@ -1,0 +1,142 @@
+{
+  "episode": 2,
+  "title": "Red Thread",
+  "scenes": [
+    {
+      "num": 1,
+      "heading": "INT. JUNO'S APARTMENT - NIGHT",
+      "location": "juno_apartment",
+      "characters": [
+        "MIRA"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira finds Juno's red scarf and wraps it over her jacket",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": "mira_jacket_scarf"
+            }
+          ],
+          "props": [],
+          "quote": "wraps it around her neck"
+        }
+      ],
+      "events": [
+        {
+          "type": "outfit_change",
+          "character": "MIRA",
+          "outfit": "mira_jacket_scarf",
+          "quote": "wraps it around her neck over the black jacket"
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 2,
+      "heading": "EXT. SKYBRIDGE - NIGHT",
+      "location": "skybridge",
+      "characters": [
+        "MIRA",
+        "KAI"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira and Kai ride the motorbike across the bridge as drones swarm",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "motorbike"
+          ],
+          "quote": "ride the motorbike across the bridge"
+        },
+        {
+          "num": 2,
+          "description": "The motorbike explodes and falls into the canal",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "motorbike"
+          ],
+          "quote": "the motorbike explodes"
+        }
+      ],
+      "events": [
+        {
+          "type": "prop_state",
+          "prop": "motorbike",
+          "state": "present",
+          "holder": "MIRA",
+          "quote": "ride the motorbike across the bridge"
+        },
+        {
+          "type": "prop_state",
+          "prop": "motorbike",
+          "state": "destroyed",
+          "holder": null,
+          "quote": "the motorbike explodes and falls into the canal"
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 3,
+      "heading": "EXT. OLD BROADCAST TOWER - LATER",
+      "location": "broadcast_tower",
+      "characters": [
+        "MIRA",
+        "KAI"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "A signal pulses from the tower, spelling Mira's name in Morse",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "spelling Mira's name in Morse code"
+        }
+      ],
+      "events": [
+        {
+          "type": "establishes",
+          "fact": "tower_signal",
+          "kind": "cliffhanger",
+          "text": "Someone at the old broadcast tower is signalling Mira",
+          "known_by": [
+            "MIRA",
+            "KAI"
+          ],
+          "quote": "A strange signal pulses from the abandoned tower"
+        }
+      ],
+      "flashback": false
+    }
+  ]
+}

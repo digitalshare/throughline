@@ -1,0 +1,20 @@
+[project]
+name = "throughline"
+version = "0.1.0"
+description = "Graph-powered series bible for AI-generated video series"
+requires-python = ">=3.11"
+dependencies = [
+    "fal-client>=1.0.3",
+    "falkordb>=1.0",
+    "httpx>=0.27",
+    "mcp>=1.10",
+    "openai>=1.50",
+    "pydantic>=2.7",
+]
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

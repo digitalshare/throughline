@@ -1,0 +1,182 @@
+{
+  "episode": 3,
+  "title": "Ledger",
+  "scenes": [
+    {
+      "num": 1,
+      "heading": "INT. SAFEHOUSE - NIGHT",
+      "location": "safehouse",
+      "characters": [
+        "MIRA",
+        "KAI"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira plugs the datachip into a cracked terminal, Kai over her shoulder",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": "mira_jacket_scarf"
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            }
+          ],
+          "props": [
+            "datachip"
+          ],
+          "quote": "plugs the datachip into a cracked terminal"
+        }
+      ],
+      "events": [
+        {
+          "type": "prop_state",
+          "prop": "datachip",
+          "state": "held",
+          "holder": "MIRA",
+          "quote": "plugs the datachip into a cracked terminal"
+        },
+        {
+          "type": "tells",
+          "character": "MIRA",
+          "to": "KAI",
+          "fact": "ledger",
+          "quote": "This is Voss's ledger."
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 2,
+      "heading": "INT. VOSS TOWER - HOLDING CELL - LATER",
+      "location": "holding_cell",
+      "characters": [
+        "MIRA",
+        "KAI",
+        "ROOK",
+        "JUNO"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Mira and Kai break in; Rook guards Juno",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "KAI",
+              "outfit": null
+            },
+            {
+              "character": "ROOK",
+              "outfit": null
+            },
+            {
+              "character": "JUNO",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "guards Juno"
+        },
+        {
+          "num": 2,
+          "description": "Mira takes Rook down; he falls from the ledge",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "ROOK",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "he falls from the ledge, dead"
+        },
+        {
+          "num": 3,
+          "description": "Mira frees Juno; the sisters embrace",
+          "characters": [
+            {
+              "character": "MIRA",
+              "outfit": null
+            },
+            {
+              "character": "JUNO",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "The sisters embrace."
+        }
+      ],
+      "events": [
+        {
+          "type": "establishes",
+          "fact": "voss_has_daughter",
+          "kind": "secret",
+          "text": "Voss has a daughter",
+          "known_by": [
+            "ROOK",
+            "MIRA",
+            "KAI",
+            "JUNO"
+          ],
+          "quote": "Not while his daughter lives."
+        },
+        {
+          "type": "dies",
+          "character": "ROOK",
+          "quote": "he falls from the ledge, dead"
+        },
+        {
+          "type": "resolves",
+          "fact": "juno_taken",
+          "quote": "Mira frees Juno."
+        }
+      ],
+      "flashback": false
+    },
+    {
+      "num": 3,
+      "heading": "INT. VOSS TOWER - PENTHOUSE - CONTINUOUS",
+      "location": "voss_penthouse",
+      "characters": [
+        "VOSS"
+      ],
+      "shots": [
+        {
+          "num": 1,
+          "description": "Voss stares at a framed photo of a young girl",
+          "characters": [
+            {
+              "character": "VOSS",
+              "outfit": null
+            }
+          ],
+          "props": [],
+          "quote": "framed photo of a young girl"
+        }
+      ],
+      "events": [
+        {
+          "type": "establishes",
+          "fact": "daughter_name",
+          "kind": "secret",
+          "text": "Voss's daughter is named Elena",
+          "known_by": [
+            "VOSS"
+          ],
+          "quote": "They'll never find you, Elena."
+        }
+      ],
+      "flashback": false
+    }
+  ]
+}

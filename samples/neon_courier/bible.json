@@ -1,0 +1,36 @@
+{
+  "series": {"id": "neon_courier", "title": "Neon Courier", "format": "9:16 vertical, 60-90s episodes", "style": "rain-soaked cyberpunk, neon magenta and teal, anamorphic flares"},
+  "characters": {
+    "MIRA":  {"name": "Mira",  "canonical_look": "woman in her 20s, short black bob with a teal streak, scar through left eyebrow", "voice": "low, dry", "default_outfit": "mira_jacket"},
+    "JUNO":  {"name": "Juno",  "canonical_look": "girl of 17, long silver-dyed braids, freckles", "voice": "bright, fast", "default_outfit": "juno_hoodie"},
+    "KAI":   {"name": "Kai",   "canonical_look": "man in his 20s, shaved head, cracked AR visor over right eye", "voice": "soft, amused", "default_outfit": "kai_coat"},
+    "VOSS":  {"name": "Director Voss", "canonical_look": "man in his 60s, slicked white hair, pale eyes", "voice": "calm, clipped", "default_outfit": "voss_suit"},
+    "ROOK":  {"name": "Rook",  "canonical_look": "huge man, chrome prosthetic left arm, mohawk", "voice": "gravel", "default_outfit": "rook_armor"}
+  },
+  "outfits": {
+    "mira_jacket":       "black leather courier jacket",
+    "mira_jacket_scarf": "black leather courier jacket with Juno's red scarf",
+    "juno_hoodie":       "oversized grey hoodie, silver locket",
+    "kai_coat":          "long olive tech coat",
+    "voss_suit":         "white three-piece suit",
+    "rook_armor":        "matte black riot armor"
+  },
+  "locations": {
+    "rooftop_garden":  "overgrown rooftop garden, neon skyline, rain",
+    "night_market":    "crowded night market, steam, paper lanterns, holo-signs",
+    "voss_penthouse":  "glass penthouse, wall of surveillance screens",
+    "juno_apartment":  "tiny apartment, posters, fairy lights",
+    "skybridge":       "glass skybridge over a canal, 200m up",
+    "broadcast_tower": "rusted broadcast tower, blinking red lights",
+    "safehouse":       "concrete safehouse, cracked terminals",
+    "holding_cell":    "steel holding cell with an open ledge",
+    "city_streets":    "wet city streets, neon reflections",
+    "highway":         "elevated highway, streaking lights",
+    "garage":          "underground garage, flickering fluorescents"
+  },
+  "props": {
+    "datachip":  "thumb-sized datachip, pulsing blue",
+    "motorbike": "Mira's matte black motorbike with a single round headlight",
+    "locket":    "Juno's silver locket"
+  }
+}
